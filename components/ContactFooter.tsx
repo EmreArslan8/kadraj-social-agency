@@ -1,107 +1,27 @@
 "use client";
-
-import { useLayoutEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
-
-const SOCIALS = ["Instagram", "Vimeo", "Behance", "LinkedIn"];
-
-// Footer CTA: huge "LET'S TALK" with an accent italic-swap hover, contact
-// details and socials with underline-sweep hovers. Content parallaxes up
-// as the section enters.
+import { FormEvent, useState } from "react";
 export default function ContactFooter() {
-  const root = useRef<HTMLElement>(null);
-  const inner = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    const reduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (reduced) return;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        inner.current,
-        { yPercent: 18, autoAlpha: 0.4 },
-        {
-          yPercent: 0,
-          autoAlpha: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top bottom",
-            end: "top center",
-            scrub: true,
-          },
-        }
-      );
-    }, root);
-
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <footer
-      ref={root}
-      id="contact"
-      className="hairline-t relative overflow-hidden px-5 pt-24 pb-10 md:px-10 md:pt-40"
-    >
-      <div ref={inner}>
-        <div className="mb-12 grid gap-4 border-y border-hairline py-5 md:grid-cols-3">
-          <span className="micro-label text-text">New productions / Q3 open</span>
-          <span className="micro-label text-text">Remote direction worldwide</span>
-          <span className="micro-label text-text md:text-right">Response within 24h</span>
-        </div>
-
-        <a
-          href="mailto:hello@kadraj.studio"
-          className="group block w-fit"
-          aria-label="Let's talk — email KADRAJ"
-        >
-          <span className="display block text-[clamp(3.5rem,16vw,14rem)] leading-[0.9] transition-colors duration-300 group-hover:text-accent">
-            Let&rsquo;s{" "}
-            {/* italic-swap on hover for the second word */}
-            <span className="relative inline-block">
-              <span className="group-hover:opacity-0">Talk</span>
-              <span className="accent-serif absolute inset-0 text-[0.9em] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                talk
-              </span>
-            </span>
-          </span>
-        </a>
-
-        <div className="mt-16 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
-          <div className="flex flex-col gap-2">
-            <span className="micro-label">Say hello</span>
-            <a
-              href="mailto:hello@kadraj.studio"
-              className="text-xl md:text-2xl underline-offset-4 hover:underline"
-            >
-              hello@kadraj.studio
-            </a>
-          </div>
-
-          <div className="flex flex-wrap gap-x-8 gap-y-3">
-            {SOCIALS.map((s) => (
-              <a
-                key={s}
-                href="#"
-                className="group relative text-base text-muted transition-colors hover:text-text"
-              >
-                {s}
-                <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
-          </div>
-        </div>
-
-        <div className="hairline-t mt-16 flex flex-col gap-2 pt-6 md:flex-row md:items-center md:justify-between">
-          <span className="micro-label">© 2026 KADRAJ — Istanbul</span>
-          <span className="micro-label">Istanbul — worldwide</span>
-        </div>
-      </div>
-    </footer>
-  );
+  const [downloaded, setDownloaded] = useState(false);
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const text = `KADRAJ — Proje Briefi\n\nAd: ${data.get("name")}\nMarka: ${data.get("brand")}\nE-posta: ${data.get("email")}\nİhtiyaç: ${data.get("service")}\n\nProje:\n${data.get("message")}\n`;
+    const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+    const a = document.createElement("a"); a.href = url; a.download = "kadraj-proje-briefi.txt"; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000); setDownloaded(true);
+  }
+  return <footer id="contact" className="contact-section section-pad">
+    <div className="section-heading"><span className="micro-label">05 / SIRADAKİ HİKÂYE SENİN</span><a href="#top" className="micro-label">BAŞA DÖN ↑</a></div>
+    <h2 className="display">HADİ,<br /><em className="accent-serif">iz bırakalım.</em><span className="contact-arrow" aria-hidden="true">↗</span></h2>
+    <div className="contact-grid"><div><p>Büyük bir lansman.<br />Yepyeni bir başlangıç.<br />Ya da sadece bir merhaba.</p><span className="micro-label">GEL, KADRAJI BİRLİKTE KURALIM.</span></div>
+      <form onSubmit={submit} onChange={() => setDownloaded(false)}>
+        <div className="form-pair"><label>Adın<input name="name" placeholder="Seni nasıl tanıyalım?" required autoComplete="name" maxLength={100} /></label><label>Markan<input name="brand" placeholder="Marka / şirket adı" required autoComplete="organization" maxLength={100} /></label></div>
+        <div className="form-pair"><label>E-posta<input name="email" type="email" placeholder="sen@markan.com" required autoComplete="email" maxLength={200} /></label><label>Neye ihtiyacın var?<select name="service">{["Sosyal medya yönetimi", "İçerik & prodüksiyon", "Tasarım & 3D", "Dijital reklam", "Hepsini konuşalım"].map(item => <option key={item}>{item}</option>)}</select></label></div>
+        <label>Aklındaki fikir<textarea name="message" placeholder="Biraz projenden bahset…" required rows={2} maxLength={4000} /></label>
+        <div className="form-submit"><p>Proje briefini hazırla ve cihazına indir.<br />Bu demo üzerinden bilgi gönderilmez.</p><button type="submit">Briefini indir <span>↗</span></button></div>
+        <p role="status" className="form-status">{downloaded ? "Briefin hazır. İndirilen dosyayı ajansla paylaşabilirsin." : ""}</p>
+      </form>
+    </div>
+    <div className="footer-base"><a href="#top" className="brand-lockup">KADRAJ✳</a><span className="micro-label">SOSYAL MEDYA. TASARIM. HAREKET.</span><span className="micro-label">© 2026 · KONSEPT AJANS DEMOSU</span></div>
+  </footer>;
 }

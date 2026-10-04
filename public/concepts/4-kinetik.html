@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fikir 4 · Kinetik Yazı</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.scene{position:relative;height:100svh;overflow:hidden;background:#000}
+.scene video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* white text on black, multiplied over the video: the footage only shows through the letters */
+.mask{position:absolute;inset:0;background:#000;mix-blend-mode:multiply;display:flex;flex-direction:column;justify-content:center;gap:1vh}
+.row{display:flex;width:max-content;white-space:nowrap;font-size:clamp(70px,15vw,250px);font-weight:800;letter-spacing:-.065em;line-height:.86;color:#fff;will-change:transform}
+.row span{padding-right:.25em}
+.row .serif{color:#fff;font-size:1.05em}
+.trail{position:absolute;width:150px;aspect-ratio:4/5;border-radius:10px;overflow:hidden;pointer-events:none;z-index:4;transform:translate(-50%,-50%) rotate(var(--rot));animation:pop 1s ease-out forwards;box-shadow:0 20px 40px #0008}
+.trail img{width:100%;height:100%;object-fit:cover}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(var(--rot))}15%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(var(--rot))}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-30%) scale(.85) rotate(var(--rot))}}
+.top{position:absolute;z-index:5;left:24px;right:24px;bottom:28px;display:flex;justify-content:space-between;align-items:end;gap:20px}
+.top p{font-size:13px;line-height:1.5;max-width:300px;color:#cfd4c0}
+.speed{position:absolute;z-index:5;right:24px;top:80px;font-size:10px;letter-spacing:.1em;color:var(--acid);font-weight:700}
+@media(max-width:700px){.trail{width:100px}.top{flex-direction:column;align-items:start}}
+</style>
+</head>
+<body>
+<section class="scene" id="scene">
+  <video src="/media/work-01.mp4" poster="/media/work-01.jpg" muted loop autoplay playsinline></video>
+  <div class="mask" aria-hidden="true">
+    <div class="row" data-dir="-1"></div>
+    <div class="row" data-dir="1"></div>
+    <div class="row" data-dir="-1"></div>
+  </div>
+  <span class="speed" id="speed">SCROLL = HIZ ×1.0</span>
+  <div class="top"><p>Yazının içinden işlerimiz akıyor. Fareyi gezdir, kaydır: kareler peşinden gelsin.</p><a class="btn" href="#">PROJENDEN BAHSET ↗</a></div>
+  <h1 style="position:absolute;width:1px;height:1px;overflow:hidden">Kadraj Social: fikir, içerik, etki</h1>
+</section>
+<aside class="concept-note" style="bottom:auto;top:76px"><b>Fikir 4 · Kinetik yazı + görsel izi</b>Dev yazı satırları ters yönlere kayıyor ve harflerin içinden video oynuyor. Kaydırdıkça hızlanıyor. Fare hareketinde peşinden iş kareleri düşüyor (awwwards'ta çok sevilen "image trail").</aside>
+<script src="bar.js"></script>
+<script>
+const words=[["FİKİR","içerik","ETKİ","✳"],["REELS","hikâye","REKLAM","✳"],["STRATEJİ","topluluk","KADRAJ","✳"]];
+const rows=[...document.querySelectorAll(".row")];
+rows.forEach((row,i)=>{const html=words[i].map((w,j)=>`<span${j===1?' class="serif"':""}>${w}</span>`).join("");row.innerHTML=html.repeat(6);});
+const pos=rows.map((_,i)=>-i*300);let boost=0;
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+addEventListener("wheel",e=>{boost=Math.min(14,boost+Math.abs(e.deltaY)*.02);},{passive:true});
+addEventListener("touchmove",()=>{boost=Math.min(14,boost+.8);},{passive:true});
+function loop(){
+  const v=reduce?0:1+boost;boost*=.94;
+  document.getElementById("speed").textContent=`SCROLL = HIZ ×${v.toFixed(1)}`;
+  rows.forEach((row,i)=>{
+    const half=row.scrollWidth/2;pos[i]+=row.dataset.dir*v*(1+i*.25);
+    if(pos[i]<-half)pos[i]+=half;if(pos[i]>0)pos[i]-=half;
+    row.style.transform=`translate3d(${pos[i]}px,0,0) skewX(${row.dataset.dir*-Math.min(boost,10)*.8}deg)`;
+  });
+  requestAnimationFrame(loop);
+}
+loop();
+const imgs=["work-01","work-02","work-03","work-04","work-05","hero"];let k=0,lx=0,ly=0;
+const scene=document.getElementById("scene");
+scene.addEventListener("pointermove",e=>{
+  if(reduce||Math.hypot(e.clientX-lx,e.clientY-ly)<110)return;lx=e.clientX;ly=e.clientY;
+  const d=document.createElement("div");d.className="trail";d.style.left=lx+"px";d.style.top=ly+"px";
+  d.style.setProperty("--rot",`${(Math.random()-.5)*16}deg`);d.innerHTML=`<img src="/media/${imgs[k++%imgs.length]}.jpg" alt="">`;
+  scene.appendChild(d);setTimeout(()=>d.remove(),1000);
+});
+</script>
+</body>
+</html>

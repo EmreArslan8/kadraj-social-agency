@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fikir 3 · Kadraj Vizörü</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.scene{position:relative;height:100svh;overflow:hidden;cursor:crosshair;background:#000}
+.bg,.sharp{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bg{filter:blur(14px) brightness(.38) saturate(.6);transform:scale(1.08)}
+.sharp{clip-path:inset(var(--t) var(--r) var(--b) var(--l) round 6px);transition:clip-path .5s cubic-bezier(.2,.7,.2,1)}
+.frame{position:absolute;pointer-events:none;left:var(--fx);top:var(--fy);width:var(--fw);height:var(--fh);transition:all .5s cubic-bezier(.2,.7,.2,1)}
+.frame i{position:absolute;width:34px;height:34px;border:2.5px solid var(--acid)}
+.frame i:nth-child(1){top:-8px;left:-8px;border-right:0;border-bottom:0}
+.frame i:nth-child(2){top:-8px;right:-8px;border-left:0;border-bottom:0}
+.frame i:nth-child(3){bottom:-8px;left:-8px;border-right:0;border-top:0}
+.frame i:nth-child(4){bottom:-8px;right:-8px;border-left:0;border-top:0}
+.frame .focus{position:absolute;left:50%;top:50%;width:46px;height:46px;transform:translate(-50%,-50%);border:1.5px solid #fff9;border-radius:50%}
+.frame .focus::before,.frame .focus::after{content:"";position:absolute;background:#fff9;left:50%;top:50%;transform:translate(-50%,-50%)}
+.frame .focus::before{width:16px;height:1.5px}.frame .focus::after{width:1.5px;height:16px}
+.frame .label{position:absolute;bottom:calc(100% + 14px);left:-8px;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--acid);white-space:nowrap}
+.hud{position:absolute;inset:26px;pointer-events:none;font-size:11px;font-weight:700;letter-spacing:.08em;color:#e7ebd8cc}
+.hud > *{position:absolute}
+.rec{top:62px;left:0;display:flex;gap:8px;align-items:center}.rec::before{content:"";width:9px;height:9px;border-radius:50%;background:#ff3b3b;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.tc{top:62px;right:0;font-variant-numeric:tabular-nums}
+.specs{bottom:0;right:0;display:flex;gap:20px}
+.thirds{position:absolute;inset:0;background:linear-gradient(90deg,transparent calc(33.3% - .5px),#ffffff14 0 calc(33.3% + .5px),transparent 0 calc(66.6% - .5px),#ffffff14 0 calc(66.6% + .5px),transparent 0),linear-gradient(0deg,transparent calc(33.3% - .5px),#ffffff14 0 calc(33.3% + .5px),transparent 0 calc(66.6% - .5px),#ffffff14 0 calc(66.6% + .5px),transparent 0);pointer-events:none}
+.copy{position:absolute;left:5vw;bottom:9vh;z-index:3;pointer-events:none;mix-blend-mode:difference;color:#fff}
+.copy h1{font-size:clamp(48px,9vw,150px);font-weight:800;letter-spacing:-.065em;line-height:.84}
+.copy h1 .serif{color:#fff}
+.copy p{font-size:13px;margin-top:18px;max-width:330px;line-height:1.5}
+.hint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:11px;letter-spacing:.2em;color:#fff8;pointer-events:none;transition:opacity .4s}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:10}
+.flash.go{animation:flash .5s ease-out}
+@keyframes flash{0%{opacity:.85}100%{opacity:0}}
+</style>
+</head>
+<body>
+<section class="scene" id="scene">
+  <video class="bg" id="v1" src="/media/hero.mp4" poster="/media/hero.jpg" muted loop autoplay playsinline></video>
+  <video class="sharp" id="v2" src="/media/hero.mp4" poster="/media/hero.jpg" muted loop autoplay playsinline></video>
+  <div class="thirds"></div>
+  <div class="frame" id="frame"><span class="label" id="flabel">KADRAJ 01 · 4:5</span><i></i><i></i><i></i><i></i><span class="focus"></span></div>
+  <div class="hud"><span class="rec">REC</span><span class="tc" id="tc">00:00:00:00</span><span class="specs"><span>ISO 400</span><span>f/1.8</span><span>1/50</span><span>4K · 25P</span></span></div>
+  <div class="copy"><h1>HER ŞEY<br><span class="serif">doğru</span> KADRAJLA<br>BAŞLAR.</h1><p>Fikri bulur, çerçeveler, ekrana taşırız. Gezdir, tıkla, kareyi yakala.</p></div>
+  <span class="hint" id="hint">FAREYİ GEZDİR · TIKLA</span>
+  <div class="flash" id="flash"></div>
+</section>
+<aside class="concept-note"><b>Fikir 3 · Kadraj vizörü</b>Markanın adından doğan imza fikir. Arka plan bulanık showreel; fareyi takip eden vizör çerçevesinin içi netleşiyor. REC, timecode, ISO gibi kamera arayüzü; tıklayınca deklanşör flaşı ve oran değişimi (4:5 → 9:16 → 1:1 → 16:9).</aside>
+<script src="bar.js"></script>
+<script>
+const scene=document.getElementById("scene"),frame=document.getElementById("frame"),v1=document.getElementById("v1"),v2=document.getElementById("v2");
+const ratios=[["4:5",4/5],["9:16",9/16],["1:1",1],["16:9",16/9]];let r=0,px=innerWidth*.62,py=innerHeight*.45;
+function place(){
+  const h=Math.min(innerHeight*.52,innerWidth*.55/ratios[r][1]),w=h*ratios[r][1];
+  const x=Math.max(10,Math.min(innerWidth-w-10,px-w/2)),y=Math.max(10,Math.min(innerHeight-h-10,py-h/2));
+  const s=frame.style;s.setProperty("--fx",x+"px");s.setProperty("--fy",y+"px");s.setProperty("--fw",w+"px");s.setProperty("--fh",h+"px");
+  const v=v2.style;v.setProperty("--t",y+"px");v.setProperty("--l",x+"px");v.setProperty("--r",innerWidth-x-w+"px");v.setProperty("--b",innerHeight-y-h+"px");
+}
+scene.addEventListener("pointermove",e=>{px=e.clientX;py=e.clientY;place();document.getElementById("hint").style.opacity=0;});
+scene.addEventListener("click",()=>{
+  const f=document.getElementById("flash");f.classList.remove("go");void f.offsetWidth;f.classList.add("go");
+  r=(r+1)%ratios.length;document.getElementById("flabel").textContent=`KADRAJ 0${r+1} · ${ratios[r][0]}`;place();
+});
+addEventListener("resize",place);place();
+// keep the two layers in sync + timecode
+setInterval(()=>{if(Math.abs(v1.currentTime-v2.currentTime)>.08)v1.currentTime=v2.currentTime;
+  const t=v2.currentTime,p=n=>String(Math.floor(n)).padStart(2,"0");
+  document.getElementById("tc").textContent=`00:${p(t/60)}:${p(t%60)}:${p((t%1)*25)}`;},40);
+</script>
+</body>
+</html>

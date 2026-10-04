@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, Instrument_Serif } from "next/font/google";
 import "./globals.css";
+import PageTransition from "@/components/PageTransition";
 
 // Display + body face. The `wdth` axis lets us push headlines to an
 // expanded ultra-bold cut while keeping normal-width body copy.
@@ -21,15 +22,15 @@ const instrument = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "KADRAJ — Creative Production Studio",
+  title: "KADRAJ — Sosyal Medya & Kreatif Ajans",
   description:
-    "KADRAJ is a creative production and digital media studio framing stories through film, brand, CGI and sound. Istanbul — worldwide.",
+    "Strateji, içerik, tasarım ve 3D hareket. KADRAJ ile markanın sosyal medyadaki hikâyesini birlikte yazalım.",
   openGraph: {
-    title: "KADRAJ — Creative Production Studio",
+    title: "KADRAJ — Sosyal Medya & Kreatif Ajans",
     description:
-      "A production studio framing stories since 2016. Film, brand, post, CGI, sound, digital.",
+      "Sadece görünme. İz bırak. Sosyal medya, kreatif prodüksiyon ve dijital deneyimler.",
     type: "website",
-    locale: "en_US",
+    locale: "tr_TR",
     siteName: "KADRAJ",
   },
 };
@@ -41,11 +42,13 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="tr"
       className={`${archivo.variable} ${instrument.variable} antialiased`}
     >
       <body>
+        <a className="skip-link" href="#main">İçeriğe geç</a>
         {children}
+        <PageTransition />
         {/* Fixed film-grain overlay, non-interactive, above content */}
         <div className="grain" aria-hidden="true" />
       </body>

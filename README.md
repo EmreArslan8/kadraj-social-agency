@@ -1,37 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KADRAJ — Social Agency
 
-## Getting Started
+Sosyal medya ajansı ilanı için, `creative-studio-demo` deposundan bağımsız klonlanan Türkçe konsept demo.
 
-First, run the development server:
+## Başlatma
 
-```bash
+```sh
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Yerel adres: http://localhost:3031
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+npm run lint
+npm run build
+npm start -- -p 3031
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deneyim
 
-## Learn More
+- Kullanıcının seçtiği `public/concepts/1-akis.html` fikrinden uyarlanan Akış Duvarı hero: beş eğik medya sütunu, ters yönlere akan kartlar, iki kısa video ve fare paralaksı.
+- Kırık beyaz / kömür / kobalt mavi palet, büyük sans ve serif tipografi.
+- Kaydırmaya bağlı GSAP zaman çizelgesi: büyüyen içerik duvarı → manifesto → yatay görsel kolaj → tam ekrana büyüyen film → hizmetler → kapanış kolajı.
+- Yukarı kaydırınca geçişler tersine çalışır. Menü ve bölüm kontrolleri doğru zaman çizelgesi konumuna gider.
+- Üç proje detay sayfası ve aralarında perde geçişi.
+- Mobil tam ekran sahneler; kısa ekranlarda ve hareket azaltma tercihinde normal belge akışı.
+- Erişilebilir modal menü, açılabilen hizmet kartları, yerel brief indirme formu.
+- Ekran dışında, diğer bölüm açıkken ve sekme görünmezken hero animasyonları/video durur.
 
-To learn more about Next.js, take a look at the following resources:
+## İçerik ve bağlantılar
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+KADRAJ adı ve mevcut medya korunmuştur. Portföy örnekleri konsept olarak etiketlidir; gerçek müşteri sonuçları veya ödül iddiası içermez.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+İletişim alanı bilgileri sunucuya göndermez. Form, tarayıcıda paylaşılabilir bir `.txt` brief oluşturup indirir. Gerçek ajans adı, e-posta adresi, sosyal hesaplar ve form servisi yayına geçmeden önce eklenmelidir.
 
-## Deploy on Vercel
+Proje verileri: `lib/projects.ts`. Ajans hizmetleri ve scroll koreografisi: `components/ScrollExperience.tsx`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Tasarım referansı: https://landonorris.com/ . Kullanıcının konsept dosyaları `public/concepts/` altında korunur.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# kadraj
+## Doğrulama notu
+
+Bu ortamda Turbopack CSS işlemcisi port açamadığı için üretim derlemesi Webpack kullanır. Üretim bağımlılıkları `npm audit --omit=dev` kontrolünden açık olmadan geçmiştir. ESLint araç zincirindeki `braces` kaynaklı geliştirme bağımlılığı uyarıları, uyumsuz sürüm düşürme yapılmadan korunmuştur.

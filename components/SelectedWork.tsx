@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -7,24 +8,7 @@ import MediaSlot from "./MediaSlot";
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface Project {
-  index: string;
-  title: string;
-  category: string;
-  year: string;
-  client: string;
-  result: string;
-  hue: number;
-  src: string;
-}
-
-const PROJECTS: Project[] = [
-  { index: "01", title: "NEON HARVEST", category: "Campaign Film", year: "2025", client: "Aurelia", result: "Launch film, cutdowns, stills", hue: 12, src: "work-01" },
-  { index: "02", title: "VELVET / CHROME", category: "Brand Identity", year: "2024", client: "Northpeak", result: "Identity film and social toolkit", hue: 260, src: "work-02" },
-  { index: "03", title: "ORBIT", category: "Product CGI", year: "2024", client: "Kivi", result: "CGI system for 12 markets", hue: 200, src: "work-03" },
-  { index: "04", title: "AFTERGLOW", category: "Music Video", year: "2023", client: "Volta", result: "Music video and live visuals", hue: 330, src: "work-04" },
-  { index: "05", title: "TERRA", category: "Documentary", year: "2023", client: "Sahra", result: "Short doc and exhibition loop", hue: 90, src: "work-05" },
-];
+import { projects as PROJECTS } from "@/lib/projects";
 
 // Pinned section: a horizontal track of project cards scrubbed by vertical
 // scroll on desktop; a simple vertical stack on mobile (no pin).
@@ -50,7 +34,8 @@ export default function SelectedWork() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             (entry.target as HTMLVideoElement).play().catch(() => {});
-            io.unobserve(entry.target);
+          } else {
+            (entry.target as HTMLVideoElement).pause();
           }
         });
       },
@@ -58,7 +43,7 @@ export default function SelectedWork() {
     );
     videos.forEach((v) => io.observe(v));
 
-    return () => io.disconnect();
+    return () => { io.disconnect(); videos.forEach(v => v.pause()); };
   }, []);
 
   useLayoutEffect(() => {
@@ -133,23 +118,22 @@ export default function SelectedWork() {
     <section ref={root} id="work" className="relative">
       <div className="grid gap-8 px-5 pt-16 pb-8 md:grid-cols-[0.8fr_1.2fr] md:px-10 md:pt-20 md:pb-4">
         <div>
-          <span className="micro-label">Selected Work</span>
+          <span className="micro-label">02 / SEÇİLİ İŞLER</span>
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted md:text-base">
-            Recent films, CGI systems and brand worlds made for screens of every
-            size.
+            Fikirlerin akışa karıştığı yer. Sosyal kampanyalar, marka dünyaları ve hareketli hikâyeler.
           </p>
         </div>
         <div className="flex flex-col gap-5 md:items-end">
           <h2 className="display max-w-3xl text-[clamp(2.5rem,5.5vw,5.5rem)] md:text-right">
-            Selected work, built frame by frame.
+            SÖZÜ AZALT. ETKİYİ BÜYÜT.
           </h2>
           <div className="flex flex-wrap gap-2">
-            {["Film", "Brand", "CGI", "Sound", "Digital"].map((item) => (
+            {["Sosyal medya", "İçerik", "3D & Motion"].map((item) => (
               <span key={item} className="micro-label border border-hairline px-3 py-2 text-text">
                 {item}
               </span>
             ))}
-            <span className="micro-label px-2 py-2 text-accent">Scroll to explore →</span>
+            <span className="micro-label px-2 py-2 text-accent">KEŞFETMEK İÇİN KAYDIR →</span>
           </div>
         </div>
       </div>
@@ -166,9 +150,9 @@ export default function SelectedWork() {
           {PROJECTS.map((p, i) => (
             <article
               key={p.index}
-              className={`group w-full shrink-0 md:w-[38vw] ${i % 2 ? "md:translate-y-12" : "md:-translate-y-8"}`}
+              className={`group w-full shrink-0 md:w-[40vw] ${i % 2 ? "md:translate-y-8" : "md:-translate-y-8"}`}
             >
-              <div className="relative overflow-hidden bg-surface">
+              <Link href={`/work/${p.slug}`} data-transition aria-label={`${p.title} projesini incele`} className="relative block overflow-hidden bg-surface">
                 <MediaSlot
                   src={p.src}
                   preload="none"
@@ -186,15 +170,15 @@ export default function SelectedWork() {
                         {p.result}
                       </p>
                     </div>
-                    <span className="micro-label text-acid">View case</span>
+                    <span className="micro-label text-acid">PROJEYİ İNCELE ↗</span>
                   </div>
                 </div>
-              </div>
+              </Link>
               <div className="mt-4 flex items-start justify-between">
                 <div>
                   <h3 className="display text-2xl md:text-3xl">{p.title}</h3>
                   <p className="micro-label mt-2">
-                    {p.category} — {p.year}
+                    {p.category} — KONSEPT PROJE
                   </p>
                 </div>
                 <span className="display text-accent text-xl">{p.index}</span>

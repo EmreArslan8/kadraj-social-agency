@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const WORDS = ["FILM", "BRAND", "POST", "CGI", "SOUND", "DIGITAL"];
+const WORDS = ["STRATEJİ", "İÇERİK", "TASARIM", "HAREKET", "ETKİ"];
 
 // Infinite horizontal marquee between hairlines. Speeds up slightly with
 // scroll velocity (clamped) via ScrollTrigger's onUpdate velocity read.

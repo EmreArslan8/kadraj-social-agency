@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;750;800&family=Instrument+Serif:ital@0;1&display=swap');
+:root{--bg:#f4f4eb;--dark:#272d20;--ink:#111310;--acid:#caff00;--sage:#c5d865;--muted:#bdc3a9}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:Archivo,sans-serif;background:var(--ink);color:#e7ebd8;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400;color:var(--sage);letter-spacing:-.02em}
+.tag{font-size:10px;letter-spacing:.08em;font-weight:600;text-transform:uppercase;color:var(--muted)}
+.btn{display:inline-flex;gap:22px;align-items:center;padding:15px 19px;border-radius:7px;background:var(--acid);color:#20271b;font-size:12px;font-weight:800;text-decoration:none}
+.concept-bar{position:fixed;z-index:100;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:5px;border-radius:99px;background:#111310cc;backdrop-filter:blur(12px);border:1px solid #ffffff1a;font-size:11px;font-weight:700;white-space:nowrap;max-width:calc(100vw - 32px);overflow-x:auto}
+.concept-bar a{color:#e7ebd8;text-decoration:none;padding:8px 13px;border-radius:99px}
+.concept-bar a[aria-current]{background:var(--acid);color:#20271b}
+.concept-note{position:fixed;z-index:100;left:16px;bottom:16px;max-width:340px;padding:14px 16px;border-radius:10px;background:#111310e6;border:1px solid #ffffff1a;font-size:12px;line-height:1.5;color:#cfd4c0}
+.concept-note b{color:var(--acid);display:block;margin-bottom:3px}
+@media(max-width:700px){.concept-note{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;animation-iteration-count:1!important}}

@@ -17,7 +17,7 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
-    const played = sessionStorage.getItem("kadraj_preloaded");
+    const played = sessionStorage.getItem("kadraj_social_preloaded");
 
     // Skip: hide before paint (useLayoutEffect) and reveal the hero now.
     if (reduced || played) {
@@ -26,7 +26,7 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
       return;
     }
 
-    sessionStorage.setItem("kadraj_preloaded", "1");
+    sessionStorage.setItem("kadraj_social_preloaded", "1");
 
     const ctx = gsap.context(() => {
       const count = { v: 0 };
@@ -85,7 +85,7 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
           ))}
         </div>
         <div className="micro-label flex items-center gap-3">
-          <span>Loading</span>
+          <span>Fikirler harekete geçiyor</span>
           <span ref={counterRef} className="text-text tabular-nums">
             00
           </span>

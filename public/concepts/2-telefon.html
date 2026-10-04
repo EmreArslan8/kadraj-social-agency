@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fikir 2 · Telefon ve Bildirimler</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+body{background:var(--bg);color:var(--dark)}
+.scene{position:relative;min-height:100svh;overflow:hidden;display:grid;grid-template-columns:1.05fr 1fr;align-items:center;padding:90px 6vw 40px;gap:4vw;background:url('/topography.svg') center/cover}
+.copy h1{font-size:clamp(44px,6vw,100px);font-weight:800;letter-spacing:-.065em;line-height:.86;margin:18px 0 24px}
+.copy h1 .serif{color:var(--dark);font-size:.95em}
+.copy p{font-size:14px;line-height:1.5;max-width:360px;color:#4d5444;margin-bottom:26px}
+.copy .tag{color:#6c7162}
+.stage{position:relative;height:min(78svh,720px);display:grid;place-items:center;perspective:1200px}
+.phone{position:relative;height:min(70svh,640px);width:calc(min(70svh,640px)*9/19);border-radius:46px;background:#0d0f0b;padding:11px;box-shadow:0 50px 90px -30px #272d2088,0 0 0 1.5px #3a4232 inset;transform:rotateY(var(--ry,-14deg)) rotateX(var(--rx,6deg));transition:transform .6s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.screen{position:relative;height:100%;border-radius:36px;overflow:hidden;background:#000}
+.screen video{width:100%;height:100%;object-fit:cover}
+.screen::before{content:"";position:absolute;top:10px;left:50%;width:30%;height:22px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:3}
+.ui{position:absolute;inset:auto 0 0;padding:16px;z-index:2;color:#fff;background:linear-gradient(0deg,#000a,transparent);font-size:11px}
+.ui b{display:block;font-size:12px;margin-bottom:4px}
+.side{position:absolute;right:10px;bottom:90px;display:flex;flex-direction:column;gap:16px;z-index:2;color:#fff;font-size:10px;text-align:center;font-weight:700}
+.side span{display:block;font-size:22px}
+.heart{position:absolute;right:22px;bottom:150px;z-index:4;font-size:22px;color:#ff3d6e;pointer-events:none;animation:rise 2.4s ease-out forwards}
+@keyframes rise{0%{transform:translate(0,0) scale(.4);opacity:0}15%{opacity:1;transform:translate(0,-20px) scale(1.15)}100%{transform:translate(var(--dx),-260px) scale(.8);opacity:0}}
+.float{position:absolute;z-index:5;padding:13px 15px;border-radius:14px;background:#ffffffd9;backdrop-filter:blur(14px);box-shadow:0 20px 40px -18px #272d2066;border:1px solid #fff;font-size:12px;animation:bob 6s ease-in-out infinite;display:flex;gap:11px;align-items:center}
+.float .ico{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--acid);font-size:16px;flex-shrink:0}
+.float small{display:block;color:#6c7162;font-size:10px;margin-top:2px}
+.f1{top:12%;left:2%}.f2{top:42%;right:2%;animation-delay:-2s;display:block;width:190px}.f3{bottom:12%;left:4%;animation-delay:-4s}.f4{top:4%;right:8%;animation-delay:-3s}
+.f2 strong{font-size:30px;letter-spacing:-.04em;display:block;margin:2px 0}
+.f2 svg{width:100%;height:42px;display:block}
+.f2 path.line{stroke:#7fa000;stroke-width:2.5;fill:none;stroke-dasharray:300;stroke-dashoffset:300;animation:draw 2.4s .4s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.toast{transition:opacity .4s,transform .4s}.toast.swap{opacity:0;transform:translateY(8px)}
+@media(max-width:860px){.phone{height:56svh;width:calc(56svh*9/19)}.scene{grid-template-columns:1fr;padding-top:100px;text-align:center}.copy p{margin-inline:auto}.stage{height:62svh}.f1{left:0}.f3{left:0}.f2{right:0;width:160px}}
+</style>
+</head>
+<body>
+<section class="scene">
+  <div class="copy">
+    <span class="tag">Sosyal medya · İçerik · Reklam</span>
+    <h1>İLK SANİYEDE <span class="serif">dikkat.</span><br>SONRA <span class="serif">bağ.</span></h1>
+    <p>Akışta durduran Reels'ler, büyüyen topluluklar, ölçülen sonuçlar. Markanın sesini birlikte bulalım.</p>
+    <a class="btn" href="#">TEKLİF AL ↗</a>
+  </div>
+  <div class="stage" id="stage">
+    <div class="phone" id="phone">
+      <div class="screen" id="screen">
+        <video src="/media/hero.mp4" poster="/media/hero.jpg" muted loop autoplay playsinline></video>
+        <div class="side"><div><span>♥</span><em id="likes">24,8B</em></div><div><span>💬</span>1.204</div><div><span>↗</span>Paylaş</div></div>
+        <div class="ui"><b>@kadraj.social</b>Yeni sezon kampanyası · Neon Harvest ✳</div>
+      </div>
+    </div>
+    <div class="float f1 toast" id="toast"><span class="ico">♥</span><div><b id="toastTitle">ayse.design gönderini beğendi</b><small>şimdi</small></div></div>
+    <div class="float f2"><span class="tag" style="color:#6c7162">Aylık erişim</span><strong>+%<span id="count">0</span></strong>
+      <svg viewBox="0 0 160 42" preserveAspectRatio="none"><path class="line" d="M0 38 C20 36 30 34 45 30 S70 28 85 22 S115 14 125 10 S150 4 160 2"/></svg></div>
+    <div class="float f3"><span class="ico">💬</span><div><b>“Bu fikir çok iyi 🔥”</b><small>48 yanıt</small></div></div>
+    <div class="float f4"><span class="ico">＋</span><div><b>+2.140 takipçi</b><small>bu hafta</small></div></div>
+  </div>
+</section>
+<aside class="concept-note" style="left:auto;right:16px"><b>Fikir 2 · Telefon & bildirimler</b>Ortada içerik oynatan, fareye göre 3D eğilen telefon. Etrafında süzülen bildirim ve istatistik kartları (+%340 erişim grafiği kendini çiziyor), ekrandan kalpler yükseliyor. "Sosyal medya ajansı" mesajını tek bakışta veriyor.</aside>
+<script src="bar.js"></script>
+<script>
+const phone=document.getElementById("phone"),screen=document.getElementById("screen");
+addEventListener("pointermove",e=>{
+  phone.style.setProperty("--ry",`${(e.clientX/innerWidth-.5)*28}deg`);
+  phone.style.setProperty("--rx",`${(e.clientY/innerHeight-.5)*-16}deg`);
+});
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let likes=24800;
+if(!reduce)setInterval(()=>{
+  const h=document.createElement("span");h.className="heart";h.textContent="♥";
+  h.style.setProperty("--dx",`${(Math.random()-.5)*60}px`);
+  screen.appendChild(h);setTimeout(()=>h.remove(),2500);
+  likes+=Math.floor(Math.random()*40);
+  document.getElementById("likes").textContent=(likes/1000).toFixed(1).replace(".",",")+"B";
+},650);
+const names=["ayse.design gönderini beğendi","mert.cafe seni etiketledi","Reels'in 100B izlenmeyi geçti","zeynep.studio yorum yaptı"];
+let n=0;const toast=document.getElementById("toast");
+setInterval(()=>{toast.classList.add("swap");setTimeout(()=>{n=(n+1)%names.length;document.getElementById("toastTitle").textContent=names[n];toast.classList.remove("swap");},400);},2800);
+let c=0;const counter=document.getElementById("count");
+const tick=()=>{c=Math.min(340,c+7);counter.textContent=c;if(c<340)requestAnimationFrame(tick);};
+setTimeout(tick,400);
+</script>
+</body>
+</html>

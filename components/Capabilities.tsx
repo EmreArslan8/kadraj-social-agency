@@ -1,74 +1,28 @@
 "use client";
-
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 gsap.registerPlugin(ScrollTrigger);
-
-const CAPABILITIES = [
-  ["Direction", "Creative direction, treatment, visual language and shoot planning."],
-  ["Production", "Film crews, stills, set design, talent, locations and remote supervision."],
-  ["Post", "Edit, grade, motion, CGI, compositing, sound design and delivery masters."],
-  ["Launch", "Cutdown systems, social formats, retail loops and asset libraries."],
+const SERVICES = [
+  ["Sosyal medya", "Markanın sesini bulur, doğru insanlarla buluştururuz. Stratejiden içerik takvimine, topluluk yönetiminden raporlamaya aynı masadayız.", "STRATEJİ / İÇERİK PLANI / TOPLULUK"],
+  ["İçerik & prodüksiyon", "İlk saniyede dikkat çeken, sonrasında hatırlanan içerikler. Reels, TikTok, fotoğraf ve marka filmleri için fikirden son kurguya üretim.", "REELS / FOTOĞRAF / VİDEO / UGC"],
+  ["Tasarım & 3D", "Markanın dünyasını genişleten görsel kimlikler, hareketli tasarımlar ve 3D deneyimler. Her temas noktasında aynı karakter.", "ART DIRECTION / CGI / MOTION"],
+  ["Dijital reklam", "Yaratıcı fikri ölçülebilir bir plana bağlarız. Hedef kitle, kreatif varyasyonları ve düzenli optimizasyonla kampanyayı birlikte geliştiririz.", "META ADS / TIKTOK ADS / ANALİZ"],
 ];
-
-export default function Capabilities() {
+export default function Capabilities({ cinematic = false }: { cinematic?: boolean }) {
   const root = useRef<HTMLElement>(null);
-
+  const [open, setOpen] = useState(0);
   useLayoutEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
-
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>(".cap-row").forEach((row) => {
-        gsap.fromTo(
-          row,
-          { opacity: 0.35 },
-          {
-            opacity: 1,
-            scrollTrigger: {
-              trigger: row,
-              start: "top 80%",
-              end: "top 35%",
-              scrub: true,
-            },
-          }
-        );
-      });
-    }, root);
-
+    if (cinematic || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = gsap.context(() => { gsap.from(".service-row", { y: 45, opacity: .2, stagger: .1, duration: .8, scrollTrigger: { trigger: root.current, start: "top 75%" } }); }, root);
     return () => ctx.revert();
-  }, []);
-
-  return (
-    <section ref={root} id="studio" className="hairline-t px-5 py-16 md:px-10 md:py-24">
-      <div className="grid gap-10 md:grid-cols-[0.7fr_1.3fr]">
-        <div className="md:sticky md:top-24 md:h-fit">
-          <span className="micro-label">Capabilities</span>
-          <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted md:text-base">
-            One senior team from treatment to delivery, assembled around the
-            exact needs of every production.
-          </p>
-        </div>
-
-        <div className="border-t border-hairline">
-          {CAPABILITIES.map(([title, copy], index) => (
-            <article
-              key={title}
-              className="cap-row group grid gap-5 border-b border-hairline py-7 md:grid-cols-[96px_0.9fr_1.1fr] md:items-start"
-            >
-              <span className="display text-4xl text-muted transition-colors group-hover:text-accent">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <h3 className="display text-[clamp(2rem,5vw,5rem)]">{title}</h3>
-              <p className="max-w-lg text-sm leading-relaxed text-muted md:text-base">
-                {copy}
-              </p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  }, [cinematic]);
+  return <section ref={root} id="studio" className="services-section section-pad">
+    <div className="section-heading"><span className="micro-label">03 / NELER YAPIYORUZ?</span><span className="micro-label">TEK EKİP. ÇOK BOYUTLU BAKIŞ.</span></div>
+    <div className="services-layout"><div><h2 className="display">FİKİRDEN<br /><em className="accent-serif">etkiye.</em></h2><p>Markanın ihtiyacı neyse,<br />kadrajı oraya çeviriyoruz.</p><span className="service-star" aria-hidden="true">✳</span></div>
+    <div>{SERVICES.map(([title, copy, tags], i) => <article key={title} className={`service-row ${open === i ? "is-open" : ""}`}>
+      <h3><button onClick={() => { setOpen(open === i ? -1 : i); requestAnimationFrame(() => ScrollTrigger.refresh()); }} aria-expanded={open === i} aria-controls={`service-${i}`}><span className="micro-label">0{i+1}</span><span>{title}</span><span className="service-plus">{open === i ? "−" : "+"}</span></button></h3>
+      <div id={`service-${i}`} hidden={open !== i} className="service-description"><p>{copy}</p><span className="micro-label">{tags}</span></div>
+    </article>)}</div></div>
+  </section>;
 }

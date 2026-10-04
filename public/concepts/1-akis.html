@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fikir 1 · Akış Duvarı</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.scene{position:relative;height:100svh;overflow:hidden;background:var(--dark);display:grid;place-items:center;isolation:isolate}
+.wall{position:absolute;inset:-25% -15%;display:grid;grid-template-columns:repeat(5,1fr);gap:18px;transform:rotate(-9deg) translate3d(var(--mx,0),var(--my,0),0);transition:transform .9s cubic-bezier(.2,.7,.2,1);z-index:-2}
+.col{display:flex;flex-direction:column;gap:18px;animation:up 38s linear infinite}
+.col:nth-child(even){animation-name:down;animation-duration:46s}
+.col:nth-child(3){animation-duration:30s}
+.card{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/5;background:#1a1f16;flex-shrink:0}
+.card.tall{aspect-ratio:9/16}
+.card img,.card video{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.85)}
+.card .meta{position:absolute;left:10px;bottom:10px;right:10px;display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 6px #0009}
+.card .meta i{font-style:normal;color:var(--acid)}
+@keyframes up{to{transform:translateY(-50%)}}
+@keyframes down{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+.scene::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 60% 55% at 50% 50%,#272d20f2 20%,#272d20b3 55%,#272d2033 100%)}
+.copy{text-align:center;padding:0 6vw;max-width:1250px}
+.copy h1{font-size:clamp(40px,6.6vw,108px);font-weight:750;letter-spacing:-.045em;line-height:.97;margin:20px 0 26px}
+.copy p{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:26px}
+@media(max-width:700px){.wall{grid-template-columns:repeat(3,1fr);inset:-30% -40%}}
+</style>
+</head>
+<body>
+<section class="scene">
+  <div class="wall" id="wall" aria-hidden="true"></div>
+  <div class="copy">
+    <span class="tag">Kadraj Social Studio / Bakış açımız</span>
+    <h1>SINIRLARI AŞAN <span class="serif">fikirler.</span> AKILDA KALAN <span class="serif">hikâyeler.</span></h1>
+    <p>Markanı sadece görünür değil, vazgeçilmez kılan içerikler.</p>
+    <a class="btn" href="#">İŞLERİ GÖR ↗</a>
+  </div>
+</section>
+<aside class="concept-note"><b>Fikir 1 · Akış duvarı</b>Arkada eğik sütunlarda ters yönlere akan gerçek işler (Reels/post kartları). Sosyal medya akışı hissi verir, yazı ortadaki koyu odakta okunur kalır. Fare ile hafif parallax.</aside>
+<script src="bar.js"></script>
+<script>
+const media=["work-01","work-02","work-03","work-04","work-05","hero"];
+const stats=["♥ 24,8B","▶ 1,2M","♥ 9,4B","↗ %340","▶ 860B","♥ 51B","▶ 3,1M"];
+const wall=document.getElementById("wall");
+for(let c=0;c<5;c++){
+  const col=document.createElement("div");col.className="col";
+  const items=[];
+  for(let i=0;i<5;i++){
+    const src=media[(c*2+i)%media.length],tall=(c+i)%3===0,video=(c===1&&i===1)||(c===3&&i===2);
+    items.push(`<div class="card${tall?" tall":""}">${video?`<video src="/media/${src}.mp4" poster="/media/${src}.jpg" muted loop autoplay playsinline></video>`:`<img src="/media/${src}.jpg" alt="">`}<span class="meta"><span>@kadraj</span><i>${stats[(c+i)%stats.length]}</i></span></div>`);
+  }
+  col.innerHTML=items.join("")+items.join(""); // duplicated for a seamless loop
+  wall.appendChild(col);
+}
+addEventListener("pointermove",e=>{
+  wall.style.setProperty("--mx",`${(e.clientX/innerWidth-.5)*-40}px`);
+  wall.style.setProperty("--my",`${(e.clientY/innerHeight-.5)*-40}px`);
+});
+</script>
+</body>
+</html>
